@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-import { palette, radius, spacing } from '@/constants/theme';
+import { elevation, palette, radius, spacing } from '@/constants/theme';
 
 export function MetricCard({ title, value, accent, helper }: { title: string; value: string; accent?: string; helper?: ReactNode }) {
   return (
@@ -16,24 +16,27 @@ export function MetricCard({ title, value, accent, helper }: { title: string; va
 const styles = StyleSheet.create({
   card: {
     flex: 1,
-    minHeight: 90,
+    minHeight: 94,
     backgroundColor: palette.surface,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: palette.border,
     padding: spacing.md,
-    gap: spacing.xs,
+    gap: spacing.sm,
+    ...elevation.card,
   },
   title: {
     color: palette.textMuted,
     fontSize: 13,
+    fontWeight: '700',
   },
   value: {
     color: palette.text,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 22,
+    fontWeight: '800',
   },
   helper: {
     marginTop: 'auto',
   },
 });
+

@@ -1,3 +1,5 @@
+import * as SQLite from 'expo-sqlite';
+
 import { getDatabase } from '@/data/db';
 import { SummarySnapshot } from '@/domain/types';
 
@@ -33,6 +35,10 @@ function mapSummary(row: SummaryRow): SummarySnapshot {
     narrative: row.narrative,
     generatedAt: row.generated_at,
   };
+}
+
+async function resolveDb(db?: SQLite.SQLiteDatabase) {
+  return db ?? getDatabase();
 }
 
 export const summaryRepository = {
@@ -80,5 +86,52 @@ export const summaryRepository = {
         snapshot.generatedAt,
       ]
     );
+  },
+
+  async listAll(): Promise<SummarySnapshot[]> {
+    const db = await getDatabase();
+    const rows = await db.getAllAsync<SummaryRow>(
+      'SELECT * FROM summary_snapshots ORDER BY period_start DESC, generated_at DESC;'
+    );
+    return rows.map(mapSummary);
+  },
+
+  async createMany(items: SummarySnapshot[], db?: SQLite.SQLiteDatabase): Promise<void> {
+    const database = await resolveDb(db);
+    for (const item of items) {
+      await database.runAsync(
+        `INSERT INTO summary_snapshots (
+          id, period_type, period_start, period_end, total_expense_minor, total_income_minor,
+          net_balance_minor, top_category_id, comparison_expense_delta_pct,
+          comparison_income_delta_pct, generated_by, narrative, generated_at
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);`,
+        [
+          item.id,
+          item.periodType,
+          item.periodStart,
+          item.periodEnd,
+          item.totalExpenseMinor,
+          item.totalIncomeMinor,
+          item.netBalanceMinor,
+          item.topCategoryId ?? null,
+          item.comparisonExpenseDeltaPct ?? null,
+          item.comparisonIncomeDeltaPct ?? null,
+          item.generatedBy,
+          item.narrative ?? null,
+          item.generatedAt,
+        ]
+      );
+    }
+  },
+
+  async clearAll(db?: SQLite.SQLiteDatabase): Promise<void> {
+    const database = await resolveDb(db);
+    await database.runAsync('DELETE FROM summary_snapshots;');
+  },
+
+  async replaceAll(items: SummarySnapshot[], db?: SQLite.SQLiteDatabase): Promise<void> {
+    const database = await resolveDb(db);
+    await this.clearAll(database);
+    await this.createMany(items, database);
   },
 };

@@ -157,8 +157,17 @@ export function monthKeyFromIso(iso: string): string {
   return monthKey(new Date(iso));
 }
 
+export function formatMonthLabel(monthValue: string): string {
+  const [year, month] = monthValue.split('-').map(Number);
+  return `${year}\u5e74${month}\u6708`;
+}
+
 export function dateToKey(date: Date): string {
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+}
+
+export function todayDateKey(): string {
+  return dateToKey(new Date());
 }
 
 export function dateFromDateKey(key: string): Date {

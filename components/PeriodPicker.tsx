@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { palette, radius, spacing } from '@/constants/theme';
+import { elevation, palette, radius, spacing } from '@/constants/theme';
 import { ReviewPeriod } from '@/domain/types';
 
 const labels: Record<ReviewPeriod, string> = {
@@ -48,15 +48,23 @@ export function PeriodPicker({
       </View>
       {value === 'custom' ? (
         <View style={styles.customRow}>
-          <Pressable style={styles.customButton} onPress={onPickCustomStart}><Text style={styles.customText}>{customStartLabel}</Text></Pressable>
+          <Pressable style={styles.customButton} onPress={onPickCustomStart}>
+            <Text style={styles.customText}>{customStartLabel}</Text>
+          </Pressable>
           <Text style={styles.separator}>{'\u81f3'}</Text>
-          <Pressable style={styles.customButton} onPress={onPickCustomEnd}><Text style={styles.customText}>{customEndLabel}</Text></Pressable>
+          <Pressable style={styles.customButton} onPress={onPickCustomEnd}>
+            <Text style={styles.customText}>{customEndLabel}</Text>
+          </Pressable>
         </View>
       ) : (
         <View style={styles.navRow}>
-          <Pressable onPress={onPrev} style={styles.navButton}><Text style={styles.navButtonText}>{'<'}</Text></Pressable>
+          <Pressable onPress={onPrev} style={styles.navButton}>
+            <Text style={styles.navButtonText}>{'<'}</Text>
+          </Pressable>
           <Text style={styles.label}>{label}</Text>
-          <Pressable onPress={onNext} style={[styles.navButton, !canGoNext && styles.navButtonDisabled]} disabled={!canGoNext}><Text style={styles.navButtonText}>{'>'}</Text></Pressable>
+          <Pressable onPress={onNext} style={[styles.navButton, !canGoNext && styles.navButtonDisabled]} disabled={!canGoNext}>
+            <Text style={styles.navButtonText}>{'>'}</Text>
+          </Pressable>
         </View>
       )}
     </View>
@@ -71,30 +79,65 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: radius.pill,
     backgroundColor: palette.surfaceMuted,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
-  chipSelected: { backgroundColor: palette.primary },
+  chipSelected: { backgroundColor: palette.primary, borderColor: palette.primary },
   chipText: { color: palette.textMuted, fontWeight: '600' },
   chipTextSelected: { color: '#FFFFFF' },
-  navRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  navRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: palette.border,
+    backgroundColor: palette.surface,
+    paddingHorizontal: spacing.sm,
+    paddingVertical: spacing.sm,
+    ...elevation.card,
+  },
   navButton: {
     width: 36,
     height: 36,
     borderRadius: radius.pill,
-    backgroundColor: palette.surfaceMuted,
+    backgroundColor: palette.surfaceSoft,
+    borderWidth: 1,
+    borderColor: palette.border,
     alignItems: 'center',
     justifyContent: 'center',
   },
   navButtonDisabled: { opacity: 0.35 },
   navButtonText: { color: palette.text, fontSize: 20, lineHeight: 20, fontWeight: '700' },
-  label: { color: palette.text, fontSize: 15, fontWeight: '700' },
-  customRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm },
+  label: {
+    flex: 1,
+    minWidth: 0,
+    color: palette.text,
+    fontSize: 16,
+    fontWeight: '800',
+    textAlign: 'center',
+  },
+  customRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: palette.border,
+    backgroundColor: palette.surface,
+    padding: spacing.sm,
+    ...elevation.card,
+  },
   customButton: {
     flex: 1,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
     borderRadius: radius.md,
-    backgroundColor: palette.surfaceMuted,
+    backgroundColor: palette.surfaceSoft,
+    borderWidth: 1,
+    borderColor: palette.border,
   },
   customText: { color: palette.text, fontWeight: '600' },
   separator: { color: palette.textMuted },
 });
+

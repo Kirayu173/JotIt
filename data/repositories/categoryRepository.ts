@@ -1,3 +1,5 @@
+import * as SQLite from 'expo-sqlite';
+
 import { getDatabase } from '@/data/db';
 import { Category, CategoryType } from '@/domain/types';
 
@@ -27,6 +29,10 @@ function mapCategory(row: CategoryRow): Category {
   };
 }
 
+async function resolveDb(db?: SQLite.SQLiteDatabase) {
+  return db ?? getDatabase();
+}
+
 export const categoryRepository = {
   async count(): Promise<number> {
     const db = await getDatabase();
@@ -40,9 +46,15 @@ export const categoryRepository = {
     return rows.map(mapCategory);
   },
 
-  async create(category: Category): Promise<void> {
+  async getById(id: string): Promise<Category | null> {
     const db = await getDatabase();
-    await db.runAsync(
+    const row = await db.getFirstAsync<CategoryRow>('SELECT * FROM categories WHERE id = ? LIMIT 1;', [id]);
+    return row ? mapCategory(row) : null;
+  },
+
+  async create(category: Category, db?: SQLite.SQLiteDatabase): Promise<void> {
+    const database = await resolveDb(db);
+    await database.runAsync(
       `INSERT INTO categories (
         id, name, type, color, icon, sort_order, is_default, created_at, updated_at
       ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);`,
@@ -58,6 +70,24 @@ export const categoryRepository = {
         category.updatedAt,
       ]
     );
+  },
+
+  async createMany(categories: Category[], db?: SQLite.SQLiteDatabase): Promise<void> {
+    const database = await resolveDb(db);
+    for (const category of categories) {
+      await this.create(category, database);
+    }
+  },
+
+  async clearAll(db?: SQLite.SQLiteDatabase): Promise<void> {
+    const database = await resolveDb(db);
+    await database.runAsync('DELETE FROM categories;');
+  },
+
+  async replaceAll(categories: Category[], db?: SQLite.SQLiteDatabase): Promise<void> {
+    const database = await resolveDb(db);
+    await this.clearAll(database);
+    await this.createMany(categories, database);
   },
 
   async reconcileDefaults(categories: Category[]): Promise<void> {

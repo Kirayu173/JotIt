@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { palette, radius, spacing } from '@/constants/theme';
+import { elevation, palette, radius, spacing } from '@/constants/theme';
 import { formatCurrency } from '@/domain/money';
 import { SummaryMetric } from '@/domain/types';
 
@@ -37,20 +37,22 @@ const styles = StyleSheet.create({
     borderColor: palette.border,
     padding: spacing.md,
     gap: spacing.sm,
+    ...elevation.card,
   },
-  title: { color: palette.text, fontSize: 16, fontWeight: '700' },
+  title: { color: palette.text, fontSize: 17, fontWeight: '800' },
   empty: { color: palette.textMuted, fontSize: 14 },
   list: { gap: spacing.md },
-  item: { gap: spacing.xs },
+  item: { gap: spacing.sm },
   header: { flexDirection: 'row', justifyContent: 'space-between', gap: spacing.md },
   name: { color: palette.text, fontSize: 14, fontWeight: '600' },
   amount: { color: palette.textMuted, fontSize: 13 },
   track: {
     width: '100%',
-    height: 10,
+    height: 12,
     borderRadius: radius.pill,
     backgroundColor: palette.surfaceMuted,
     overflow: 'hidden',
   },
   bar: { height: '100%', borderRadius: radius.pill },
 });
+

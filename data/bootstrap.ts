@@ -1,3 +1,4 @@
+import { syncDueRecurringOccurrences } from '@/data/recurringService';
 import { defaultCategories } from '@/data/defaultCategories';
 import { runMigrations } from '@/data/db';
 import { categoryRepository } from '@/data/repositories/categoryRepository';
@@ -14,4 +15,5 @@ export async function bootstrapDatabase() {
   await settingsRepository.upsert('ledgerWindowDays', String(defaultAppSettings.ledgerWindowDays));
   await settingsRepository.upsert('ledgerGroupBy', defaultAppSettings.ledgerGroupBy);
   await syncClosedMonthlySnapshots();
+  await syncDueRecurringOccurrences();
 }

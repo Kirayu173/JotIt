@@ -32,7 +32,9 @@ export function SectionTransactionList({
       onEndReachedThreshold={0.3}
       onEndReached={onEndReached}
       renderSectionHeader={({ section }) => (
-        <View style={styles.sectionHeader}><Text style={styles.sectionTitle}>{section.title}</Text></View>
+        <View style={styles.sectionHeader}>
+          <Text style={styles.sectionTitle}>{section.title}</Text>
+        </View>
       )}
       renderItem={({ item }) => (
         <TransactionRow transaction={item} category={categoriesById[item.categoryId]} onPress={() => onPressTransaction(item)} />
@@ -40,9 +42,13 @@ export function SectionTransactionList({
       ItemSeparatorComponent={() => <View style={styles.separator} />}
       ListEmptyComponent={
         loading ? (
-          <View style={styles.emptyState}><ActivityIndicator color={palette.primary} /></View>
+          <View style={styles.emptyState}>
+            <ActivityIndicator color={palette.primary} />
+          </View>
         ) : (
-          <View style={styles.emptyState}><Text style={styles.emptyText}>{emptyMessage}</Text></View>
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyText}>{emptyMessage}</Text>
+          </View>
         )
       }
     />
@@ -54,8 +60,8 @@ const styles = StyleSheet.create({
   emptyContainer: { flexGrow: 1, paddingBottom: 120 },
   sectionHeader: {
     paddingHorizontal: spacing.md,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xs,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
     backgroundColor: palette.background,
   },
   sectionTitle: {
@@ -63,7 +69,8 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '600',
   },
-  separator: { height: 1, backgroundColor: palette.border, marginLeft: 72 },
+  separator: { height: spacing.sm, backgroundColor: 'transparent' },
   emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 80 },
   emptyText: { color: palette.textMuted, fontSize: 14 },
 });
+

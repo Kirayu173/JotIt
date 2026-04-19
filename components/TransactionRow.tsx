@@ -8,17 +8,21 @@ import { Category, TransactionRecord } from '@/domain/types';
 export function TransactionRow({ transaction, category, onPress }: { transaction: TransactionRecord; category?: Category; onPress: () => void }) {
   const amountColor = transaction.type === 'expense' ? palette.expense : palette.income;
   const amountPrefix = transaction.type === 'expense' ? '-' : '+';
+
   return (
-    <Pressable onPress={onPress} style={styles.row}>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}>
       <View style={styles.iconWrap}>
         <Text style={styles.icon}>{category?.icon ?? '\uD83D\uDCD2'}</Text>
       </View>
       <View style={styles.content}>
         <Text style={styles.title}>{category?.name ?? '\u672a\u5206\u7c7b'}</Text>
-        <Text style={styles.subtitle}>{transaction.note?.trim() || '\u624B\u52A8\u8BB0\u8D26'}</Text>
+        <Text style={styles.subtitle}>{transaction.note?.trim() || '\u624b\u52a8\u8bb0\u8d26'}</Text>
       </View>
       <View style={styles.amountWrap}>
-        <Text style={[styles.amount, { color: amountColor }]}>{amountPrefix}{formatCurrency(transaction.amountMinor)}</Text>
+        <Text style={[styles.amount, { color: amountColor }]}>
+          {amountPrefix}
+          {formatCurrency(transaction.amountMinor)}
+        </Text>
         <Text style={styles.time}>{formatDateLabel(transaction.occurredAt)}</Text>
       </View>
     </Pressable>
@@ -30,10 +34,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
-    paddingVertical: spacing.sm,
+    marginHorizontal: spacing.md,
+    paddingVertical: 12,
     paddingHorizontal: spacing.md,
     backgroundColor: palette.surface,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: palette.border,
   },
+  rowPressed: { backgroundColor: palette.surfaceSoft },
   iconWrap: {
     width: 42,
     height: 42,
@@ -50,3 +59,4 @@ const styles = StyleSheet.create({
   amount: { fontSize: 15, fontWeight: '700' },
   time: { color: palette.textMuted, fontSize: 12 },
 });
+

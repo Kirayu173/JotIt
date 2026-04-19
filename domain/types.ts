@@ -2,6 +2,7 @@ export type TransactionType = 'expense' | 'income';
 export type TransactionSource = 'manual' | 'recurring' | 'nlp' | 'ocr' | 'import';
 export type CategoryType = 'expense' | 'income' | 'both';
 export type ReviewPeriod = 'week' | 'month' | 'quarter' | 'year' | 'custom';
+export type RecurringFrequency = 'weekly' | 'monthly' | 'yearly';
 
 export interface Category {
   id: string;
@@ -38,6 +39,13 @@ export interface TransactionDraft {
   categoryId: string;
   note: string;
   occurredAt: string;
+}
+
+export interface LedgerFilters {
+  monthKey?: string;
+  categoryId?: string;
+  transactionType?: TransactionType;
+  keyword?: string;
 }
 
 export interface SummarySnapshot {
@@ -101,4 +109,45 @@ export interface AppSettings {
   reviewDefaultPeriod: Extract<ReviewPeriod, 'month'>;
   ledgerWindowDays: number;
   ledgerGroupBy: 'day';
+}
+
+export interface RecurringRule {
+  id: string;
+  type: TransactionType;
+  amountMinor: number;
+  currency: 'CNY';
+  categoryId: string;
+  note?: string | null;
+  frequency: RecurringFrequency;
+  intervalCount: number;
+  anchorDate: string;
+  nextOccurrenceDate: string;
+  status: 'active' | 'paused';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RecurringOccurrence {
+  id: string;
+  ruleId: string;
+  plannedDate: string;
+  status: 'pending' | 'confirmed' | 'skipped';
+  confirmedTransactionId?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BackupPayloadV2 {
+  schemaVersion: 2;
+  exportedAt: string;
+  app: {
+    name: 'JotIt';
+    version: string;
+  };
+  settings: AppSettings;
+  categories: Category[];
+  transactions: TransactionRecord[];
+  summarySnapshots: SummarySnapshot[];
+  recurringRules: RecurringRule[];
+  recurringOccurrences: RecurringOccurrence[];
 }
